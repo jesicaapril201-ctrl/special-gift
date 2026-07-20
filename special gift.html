@@ -18,7 +18,7 @@
         :root {
             --p-dark: #d85c71;
             --p-soft: #ffccd5;
-            --white-g: rgba(255, 255, 255, 0.4);
+            --white-g: rgba(255, 255, 255, 0.45);
             --bg-color: #fff5f6;
         }
 
@@ -31,7 +31,14 @@
         .cursive { font-family: 'Dancing Script', cursive; }
 
         /* SLIDE 1: PIN */
-        #slide-password { position: fixed; inset: 0; background: linear-gradient(135deg, #fff0f3, #ffccd5); z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        #slide-password { 
+            position: fixed; inset: 0; 
+            background: linear-gradient(135deg, #fff0f3, #ffccd5); 
+            z-index: 10000; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
         .pin-dots { display: flex; gap: 15px; margin: 30px 0; }
         .dot { width: 18px; height: 18px; border: 2px solid var(--p-dark); border-radius: 50%; transition: 0.3s; }
         .dot.active { background: var(--p-dark); transform: scale(1.2); box-shadow: 0 0 10px var(--p-dark); }
@@ -39,16 +46,16 @@
         .pin-btn { width: 70px; height: 70px; border-radius: 50%; border: none; background: white; font-size: 1.2rem; font-weight: 600; color: var(--p-dark); cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
         /* SLIDE 2: GIFT */
-        #slide-gift { position: fixed; inset: 0; background: var(--bg-color); z-index: 900; display: none; flex-direction: column; justify-content: center; align-items: center; }
+        #slide-gift { position: fixed; inset: 0; background: var(--bg-color); z-index: 9000; display: none; flex-direction: column; justify-content: center; align-items: center; }
         .gift-box { width: 180px; cursor: pointer; z-index: 10; }
         .particle { position: absolute; pointer-events: none; font-size: 2rem; z-index: 100; }
 
         /* CONTENT */
         #main-content { display: none; height: 100vh; overflow-y: auto; scroll-behavior: smooth; }
-        section { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 100px 20px; position: relative; }
+        section { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 20px; position: relative; }
         
         /* POPUP */
-        #popup-card { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 85%; max-width: 380px; z-index: 2000; padding: 40px 30px; text-align: center; }
+        #popup-card { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 85%; max-width: 380px; z-index: 8000; padding: 40px 30px; text-align: center; }
         #popup-card.show { transform: translate(-50%, -50%) scale(1); transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .close-x { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; }
 
@@ -60,7 +67,7 @@
 
         /* JOURNEY TIMELINE */
         .timeline { border-left: 2px solid var(--p-soft); padding-left: 30px; position: relative; max-width: 350px; margin: 40px 0; }
-        .timeline-item { margin-bottom: 50px; position: relative; }
+        .timeline-item { margin-bottom: 50px; position: relative; text-align: left; }
         .timeline-item::before { content: '❤'; position: absolute; left: -42px; top: -5px; color: var(--p-dark); background: var(--bg-color); padding: 5px; font-size: 1.2rem; }
         .timeline-item h4 { font-size: 1.4rem; color: var(--p-dark); margin-bottom: 5px; }
         .timeline-item p { font-size: 0.9rem; opacity: 0.8; line-height: 1.5; }
@@ -77,11 +84,9 @@
         .album-art.playing { animation-play-state: running; }
         @keyframes rotate { from {transform:rotate(0)} to {transform:rotate(360deg)} }
         
-        .progress-container { width: 100%; height: 8px; background: rgba(0,0,0,0.05); border-radius: 10px; cursor: pointer; margin: 20px 0 10px 0; position: relative; }
-        .progress-bar { width: 0%; height: 100%; background: var(--p-dark); border-radius: 10px; position: relative; }
-        .progress-bar::after { content: ''; position: absolute; right: -5px; top: -4px; width: 16px; height: 16px; background: var(--p-dark); border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.2); }
-        
-        .time-info { display: flex; justify-content: space-between; font-size: 0.75rem; color: #888; margin-bottom: 15px; }
+        .progress-container { width: 100%; height: 8px; background: rgba(0,0,0,0.05); border-radius: 10px; cursor: pointer; margin: 20px 0 5px 0; position: relative; }
+        .progress-bar { width: 0%; height: 100%; background: var(--p-dark); border-radius: 10px; pointer-events: none; }
+        .time-info { display: flex; justify-content: space-between; font-size: 0.7rem; color: #888; margin-bottom: 15px; }
         .music-controls { display: flex; justify-content: center; gap: 30px; font-size: 1.5rem; color: var(--p-dark); align-items: center; }
 
         /* JAR */
@@ -97,7 +102,9 @@
     <canvas id="sakura-canvas"></canvas>
 
     <!-- SLIDE 1: PASSWORD -->
-<h2 class="cursive" style="font-size: 2.2rem; color: var(--p-dark); text-align: center; width: 100%; display: block; padding: 0 15px; box-sizing: border-box;">Untuk Hana, Cintaku ❤️</h2>
+    <div id="slide-password">
+        <h2 class="cursive" style="font-size: 2.2rem; color: var(--p-dark); text-align: center; width: 100%; margin-bottom: 10px; display: block; padding: 0 15px;">Untuk Hana, Cintaku ❤️</h2>
+        <p style="opacity: 0.7; font-size: 0.9rem;">Masukkan kode rahasia kita</p>
         <div class="pin-dots">
             <div class="dot" id="dot0"></div><div class="dot" id="dot1"></div>
             <div class="dot" id="dot2"></div><div class="dot" id="dot3"></div>
@@ -138,7 +145,7 @@
             </div>
         </section>
 
-        <!-- CARD POPUP (SLIDE 4) -->
+        <!-- CARD POPUP -->
         <div id="popup-card" class="glass">
             <span class="close-x" onclick="closePopup()">×</span>
             <h2 class="cursive" style="font-size: 2.2rem; color: var(--p-dark);">Happy Birthday</h2>
@@ -157,7 +164,7 @@
                 <span class="flower-orbit" style="bottom: 10px; left: 0; animation-delay: 2s;" onclick="msg('Kamu adalah bahagiaku.')">🌻</span>
                 <span class="flower-orbit" style="bottom: 10px; right: 0; animation-delay: 1.5s;" onclick="msg('Semoga harimu selalu indah.')">🌷</span>
             </div>
-            <p class="reveal" style="font-size: 0.8rem; margin-top: 20px; font-weight: 600;">Ketuk setiap bunga untuk pesan rahasia!</p>
+            <p class="reveal" style="font-size: 0.8rem; margin-top: 20px; font-weight: 600;">Ketuk setiap bunga!</p>
         </section>
 
         <!-- SECTION: LONG LETTER -->
@@ -190,35 +197,30 @@
             </div>
         </section>
 
-        <!-- SECTION: OUR JOURNEY (REFINED) -->
+        <!-- SECTION: OUR JOURNEY -->
         <section>
             <h2 class="reveal cursive" style="font-size: 2.5rem; color: var(--p-dark);">Our Journey</h2>
-            <p class="reveal" style="margin-bottom: 30px;">Our Story</p>
             <div class="timeline reveal">
                 <div class="timeline-item">
                     <h4 class="cursive">Titik Awal</h4>
-                    <p>Momen pertama kali kita bertemu. Sapaan singkat yang ternyata menjadi awal dari perjalanan panjang kita.</p>
+                    <p>Pertama kali takdir mempertemukan kita. Sebuah awal dari sejuta cerita.</p>
                 </div>
                 <div class="timeline-item">
                     <h4 class="cursive">Masa Pendekatan</h4>
-                    <p>Hari-hari penuh pesan singkat, tawa lewat telepon, dan perasaan yang mulai tumbuh tanpa kita sadari.</p>
+                    <p>Hari-hari penuh tawa, pesan singkat, dan perasaan yang mulai tumbuh.</p>
                 </div>
                 <div class="timeline-item">
                     <h4 class="cursive">Hari Bahagia</h4>
-                    <p>Saat kita memutuskan untuk berjalan bersama. Komitmen yang kita buat untuk saling menjaga satu sama lain.</p>
-                </div>
-                <div class="timeline-item">
-                    <h4 class="cursive">Melewati Musim</h4>
-                    <p>Banyak tantangan yang kita lalui, tapi kita selalu menemukan jalan pulang ke pelukan masing-masing.</p>
+                    <p>Saat kita memutuskan untuk berjalan bersama melewati segalanya.</p>
                 </div>
                 <div class="timeline-item">
                     <h4 class="cursive">Sekarang & Seterusnya</h4>
-                    <p>Tetap memegang tanganmu. Bersyukur memilikimu hari ini, esok, dan selamanya.</p>
+                    <p>Masih memegang tanganmu, bersyukur memilikimu hari ini dan selamanya.</p>
                 </div>
             </div>
         </section>
 
-        <!-- SECTION: PLAYLIST (SEEKABLE) -->
+        <!-- SECTION: PLAYLIST -->
         <section>
             <h2 class="reveal cursive" style="font-size: 2.5rem; color: var(--p-dark);">Our Playlist</h2>
             <div class="player glass reveal" style="margin-top: 20px;">
@@ -292,7 +294,7 @@
         }
         for(let i=0; i<40; i++) sakuras.push(new Sakura());
         function anim() {
-            ctx.clearRect(0,0,canvas.width, canvas.height);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             sakuras.forEach(s => { s.update(); s.draw(); });
             requestAnimationFrame(anim);
         } anim();
@@ -325,7 +327,7 @@
             }
         }
 
-        // GIFT EXPLOSION
+        // EXPLOSION
         function explodeGift() {
             const gift = document.getElementById('gift-box');
             const rect = gift.getBoundingClientRect();
@@ -355,7 +357,7 @@
 
         function closePopup() { document.getElementById('popup-card').classList.remove('show'); }
 
-        // MUSIC PLAYER LOGIC (WITH SEEKING)
+        // MUSIC PLAYER LOGIC
         const audio = document.getElementById('audio');
         const playlist = [
             {t: "Perfect - Ed Sheeran", s: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"},
@@ -383,7 +385,6 @@
             p ? art.classList.add('playing') : art.classList.remove('playing');
         }
 
-        // Progress Bar & Time Update
         audio.ontimeupdate = () => {
             if (audio.duration) {
                 const prog = (audio.currentTime / audio.duration) * 100;
@@ -393,7 +394,7 @@
             }
         };
 
-        // Seeking Function
+        // Seeking (Maju Mundur)
         document.getElementById('progress-area').addEventListener('click', function(e) {
             const width = this.clientWidth;
             const clickX = e.offsetX;
@@ -420,7 +421,7 @@
 
         // UTILS
         function msg(t) { Swal.fire({ text: t, confirmButtonColor: '#d85c71' }); }
-        function backToTop() { document.getElementById('main-content').scrollTo(0,0); }
+        function backToTop() { document.getElementById('main-content').scrollTo(0, 0); }
         function initGSAP() {
             gsap.registerPlugin(ScrollTrigger);
             document.querySelectorAll('.reveal').forEach(el => {
