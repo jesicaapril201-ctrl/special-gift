@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hana's Special Day ❤️</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@0,700;1,400&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --p-dark: #d85c71;
+            --p-soft: #ffccd5;
+            --white-g: rgba(255, 255, 255, 0.4);
+            --bg-color: #fff5f6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg-color); color: #4a4a4a; overflow: hidden; }
+        
+        #sakura-canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+
+        .glass { background: var(--white-g); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.6); border-radius: 25px; box-shadow: 0 10px 30px rgba(216, 92, 113, 0.1); }
+        .cursive { font-family: 'Dancing Script', cursive; }
+
+        /* SLIDE 1: PIN */
+        #slide-password { position: fixed; inset: 0; background: linear-gradient(135deg, #fff0f3, #ffccd5); z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .pin-dots { display: flex; gap: 15px; margin: 30px 0; }
+        .dot { width: 18px; height: 18px; border: 2px solid var(--p-dark); border-radius: 50%; transition: 0.3s; }
+        .dot.active { background: var(--p-dark); transform: scale(1.2); box-shadow: 0 0 10px var(--p-dark); }
+        .pin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .pin-btn { width: 70px; height: 70px; border-radius: 50%; border: none; background: white; font-size: 1.2rem; font-weight: 600; color: var(--p-dark); cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+        /* SLIDE 2: GIFT */
+        #slide-gift { position: fixed; inset: 0; background: var(--bg-color); z-index: 900; display: none; flex-direction: column; justify-content: center; align-items: center; }
+        .gift-box { width: 180px; cursor: pointer; z-index: 10; }
+        .particle { position: absolute; pointer-events: none; font-size: 2rem; z-index: 100; }
+
+        /* CONTENT */
+        #main-content { display: none; height: 100vh; overflow-y: auto; scroll-behavior: smooth; }
+        section { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 100px 20px; position: relative; }
+        
+        /* POPUP */
+        #popup-card { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 85%; max-width: 380px; z-index: 2000; padding: 40px 30px; text-align: center; }
+        #popup-card.show { transform: translate(-50%, -50%) scale(1); transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .close-x { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; }
+
+        /* BOUQUET */
+        .bouquet-area { position: relative; width: 320px; height: 350px; display: flex; justify-content: center; align-items: center; }
+        .bouquet-center { font-size: 100px; z-index: 2; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1)); }
+        .flower-orbit { position: absolute; font-size: 2.5rem; cursor: pointer; z-index: 5; animation: floatAnim 4s infinite ease-in-out; }
+        @keyframes floatAnim { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+
+        /* JOURNEY TIMELINE */
+        .timeline { border-left: 2px solid var(--p-soft); padding-left: 30px; position: relative; max-width: 350px; margin: 40px 0; }
+        .timeline-item { margin-bottom: 50px; position: relative; }
+        .timeline-item::before { content: '❤'; position: absolute; left: -42px; top: -5px; color: var(--p-dark); background: var(--bg-color); padding: 5px; font-size: 1.2rem; }
+        .timeline-item h4 { font-size: 1.4rem; color: var(--p-dark); margin-bottom: 5px; }
+        .timeline-item p { font-size: 0.9rem; opacity: 0.8; line-height: 1.5; }
+
+        /* POLAROID */
+        .polaroid-stack { display: flex; flex-direction: column; gap: 40px; }
+        .polaroid { background: white; padding: 15px 15px 40px 15px; width: 280px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); transform: rotate(-2deg); }
+        .polaroid img { width: 100%; height: 280px; object-fit: cover; }
+        .polaroid p { font-family: 'Dancing Script', cursive; font-size: 1.4rem; text-align: center; margin-top: 15px; }
+
+        /* MUSIC PLAYER */
+        .player { width: 100%; max-width: 350px; padding: 25px; text-align: center; }
+        .album-art { width: 100px; height: 100px; border-radius: 50%; border: 4px solid white; animation: rotate 15s linear infinite; animation-play-state: paused; }
+        .album-art.playing { animation-play-state: running; }
+        @keyframes rotate { from {transform:rotate(0)} to {transform:rotate(360deg)} }
+        
+        .progress-container { width: 100%; height: 8px; background: rgba(0,0,0,0.05); border-radius: 10px; cursor: pointer; margin: 20px 0 10px 0; position: relative; }
+        .progress-bar { width: 0%; height: 100%; background: var(--p-dark); border-radius: 10px; position: relative; }
+        .progress-bar::after { content: ''; position: absolute; right: -5px; top: -4px; width: 16px; height: 16px; background: var(--p-dark); border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.2); }
+        
+        .time-info { display: flex; justify-content: space-between; font-size: 0.75rem; color: #888; margin-bottom: 15px; }
+        .music-controls { display: flex; justify-content: center; gap: 30px; font-size: 1.5rem; color: var(--p-dark); align-items: center; }
+
+        /* JAR */
+        .jar-wrap { font-size: 7rem; cursor: pointer; }
+        .shake { animation: shakeJar 0.5s ease-in-out; }
+        @keyframes shakeJar { 0%, 100% {transform:rotate(0)} 25% {transform:rotate(15deg)} 75% {transform:rotate(-15deg)} }
+
+        .reveal { opacity: 0; transform: translateY(40px); }
+    </style>
+</head>
+<body>
+
+    <canvas id="sakura-canvas"></canvas>
+
+    <!-- SLIDE 1: PASSWORD -->
+    <div id="slide-password">
+        <h2 class="cursive" style="font-size: 2.5rem; color: var(--p-dark);">Untuk Hana, Cintaku ❤️</h2>
+        <div class="pin-dots">
+            <div class="dot" id="dot0"></div><div class="dot" id="dot1"></div>
+            <div class="dot" id="dot2"></div><div class="dot" id="dot3"></div>
+        </div>
+        <div class="pin-grid">
+            <button class="pin-btn" onclick="press('1')">1</button>
+            <button class="pin-btn" onclick="press('2')">2</button>
+            <button class="pin-btn" onclick="press('3')">3</button>
+            <button class="pin-btn" onclick="press('4')">4</button>
+            <button class="pin-btn" onclick="press('5')">5</button>
+            <button class="pin-btn" onclick="press('6')">6</button>
+            <button class="pin-btn" onclick="press('7')">7</button>
+            <button class="pin-btn" onclick="press('8')">8</button>
+            <button class="pin-btn" onclick="press('9')">9</button>
+            <button class="pin-btn" onclick="back()"><i class="fas fa-backspace"></i></button>
+            <button class="pin-btn" onclick="press('0')">0</button>
+            <button class="pin-btn" onclick="checkPin()"><i class="fas fa-heart"></i></button>
+        </div>
+    </div>
+
+    <!-- SLIDE 2: GIFT -->
+    <div id="slide-gift">
+        <div class="gift-box" id="gift-box" onclick="explodeGift()">
+            <img src="gift.png" style="width: 100%;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1139/1139982.png'">
+        </div>
+        <h2 class="cursive" style="margin-top: 20px; color: var(--p-dark);">Ketuk hadiahnya...</h2>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main-content">
+        
+        <section>
+            <div class="reveal">
+                <p style="letter-spacing: 5px; font-weight: 600; font-size: 0.8rem; text-align: center;">YOUR SPECIAL DAY</p>
+                <h1 class="cursive" style="font-size: 3.5rem; color: var(--p-dark); text-align: center;">Happy Birthday Hana</h1>
+                <div style="background: var(--p-dark); color: white; padding: 5px 25px; border-radius: 50px; display: table; margin: 15px auto;">April 26</div>
+                <p style="text-align: center; font-style: italic;">The Most Special Day</p>
+            </div>
+        </section>
+
+        <!-- CARD POPUP (SLIDE 4) -->
+        <div id="popup-card" class="glass">
+            <span class="close-x" onclick="closePopup()">×</span>
+            <h2 class="cursive" style="font-size: 2.2rem; color: var(--p-dark);">Happy Birthday</h2>
+            <p style="margin: 20px 0; font-weight: 600;">Hana yang paling istimewa ❤️</p>
+            <p style="font-size: 0.9rem; opacity: 0.8;">Dengan cinta yang tidak pernah habis.</p>
+        </div>
+
+        <!-- SECTION: BOUQUET -->
+        <section>
+            <h2 class="reveal cursive" style="font-size: 2.5rem; color: var(--p-dark);">My First Gift</h2>
+            <p class="reveal" style="margin-bottom: 20px;">Digital Bouquet Set</p>
+            <div class="bouquet-area reveal">
+                <div class="bouquet-center">💐</div>
+                <span class="flower-orbit" style="top: 0; left: 0;" onclick="msg('Bunga ini mewakili senyummu.')">🌸</span>
+                <span class="flower-orbit" style="top: 0; right: 0; animation-delay: 1s;" onclick="msg('Terima kasih sudah lahir sayang.')">🌹</span>
+                <span class="flower-orbit" style="bottom: 10px; left: 0; animation-delay: 2s;" onclick="msg('Kamu adalah bahagiaku.')">🌻</span>
+                <span class="flower-orbit" style="bottom: 10px; right: 0; animation-delay: 1.5s;" onclick="msg('Semoga harimu selalu indah.')">🌷</span>
+            </div>
+            <p class="reveal" style="font-size: 0.8rem; margin-top: 20px; font-weight: 600;">Ketuk setiap bunga untuk pesan rahasia!</p>
+        </section>
+
+        <!-- SECTION: LONG LETTER -->
+        <section>
+            <div class="glass reveal" style="padding: 35px; width: 100%; max-width: 450px; line-height: 1.8; font-family: 'Playfair Display', serif;">
+                <h3 class="cursive" style="font-size: 2rem; color: var(--p-dark); margin-bottom: 20px;">Dear Hana,</h3>
+                <p>
+                    Aku ingin mengucapkan betapa berartinya kamu bagiku. Kamu adalah alasan aku bersemangat setiap hari. Terima kasih sudah menjadi sosok yang luar biasa dan penuh kasih sayang. <br><br>
+                    Aku berharap di tahun ini Hana mendapatkan semua kebahagiaan yang layak didapatkan. Aku akan selalu ada di sini, menjadi rumahmu. Selamat ulang tahun, sayang.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION: PHOTO MEMORIES -->
+        <section>
+            <h2 class="reveal cursive" style="font-size: 2.5rem; color: var(--p-dark);">Our Photo Memories</h2>
+            <div class="polaroid-stack" style="margin-top: 30px;">
+                <div class="polaroid reveal" onclick="viewPhoto(0)">
+                    <img src="karina1.jpg" onerror="this.src='https://images.unsplash.com/photo-1518133910546-b6c2fb7d79e3?w=500'">
+                    <p>Momen Terindah ✨</p>
+                </div>
+                <div class="polaroid reveal" onclick="viewPhoto(1)">
+                    <img src="karina2.jpg" onerror="this.src='https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=500'">
+                    <p>Tawa Bersama ❤️</p>
+                </div>
+                <div class="polaroid reveal" onclick="viewPhoto(2)">
+                    <img src="karina3.jpg" onerror="this.src='https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?w=500'">
+                    <p>Selamanya... ♾️</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: OUR JOURNEY (REFINED) -->
+        <section>
+            <h2 class="reveal cursive" style="font-size: 2.5rem; color: var(--p-dark);">Our Journey</h2>
+            <p class="reveal" style="margin-bottom: 30px;">Our Story</p>
+            <div class="timeline reveal">
+                <div class="timeline-item">
+                    <h4 class="cursive">Titik Awal</h4>
+                    <p>Momen pertama kali kita bertemu. Sapaan singkat yang ternyata menjadi awal dari perjalanan panjang kita.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4 class="cursive">Masa Pendekatan</h4>
+                    <p>Hari-hari penuh pesan singkat, tawa lewat telepon, dan perasaan yang mulai tumbuh tanpa kita sadari.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4 class="cursive">Hari Bahagia</h4>
+                    <p>Saat kita memutuskan untuk berjalan bersama. Komitmen yang kita buat untuk saling menjaga satu sama lain.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4 class="cursive">Melewati Musim</h4>
+                    <p>Banyak tantangan yang kita lalui, tapi kita selalu menemukan jalan pulang ke pelukan masing-masing.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4 class="cursive">Sekarang & Seterusnya</h4>
+                    <p>Tetap memegang tanganmu. Bersyukur memilikimu hari ini, esok, dan selamanya.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: PLAYLIST (SEEKABLE) -->
+        <section>
+            <h2 class="reveal cursive" style="font-size: 2.5rem; color: var(--p-dark);">Our Playlist</h2>
+            <div class="player glass reveal" style="margin-top: 20px;">
+                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=200" id="album-art" class="album-art">
+                <h3 id="song-title" style="margin-top: 15px; font-size: 1.1rem;">Pilih Lagu</h3>
+                
+                <div class="progress-container" id="progress-area">
+                    <div class="progress-bar" id="prog-bar"></div>
+                </div>
+                <div class="time-info">
+                    <span id="curr-time">0:00</span>
+                    <span id="dur-time">0:00</span>
+                </div>
+
+                <div class="music-controls">
+                    <i class="fas fa-backward" onclick="prevSong()"></i>
+                    <i class="fas fa-play" id="play-btn" onclick="togglePlay()"></i>
+                    <i class="fas fa-forward" onclick="nextSong()"></i>
+                </div>
+                <div style="text-align: left; font-size: 0.85rem; margin-top: 15px;">
+                    <div onclick="playAt(0)" style="cursor:pointer; padding: 10px; border-bottom: 1px solid rgba(0,0,0,0.05);">1. Perfect - Ed Sheeran</div>
+                    <div onclick="playAt(1)" style="cursor:pointer; padding: 10px; border-bottom: 1px solid rgba(0,0,0,0.05);">2. Cantik - Kahitna</div>
+                    <div onclick="playAt(2)" style="cursor:pointer; padding: 10px;">3. Akad - Payung Teduh</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: JAR -->
+        <section>
+            <h2 class="reveal cursive" style="font-size: 2.5rem; color: var(--p-dark);">Reason I'm Grateful</h2>
+            <div class="jar-wrap reveal" id="jar" onclick="shakeJar()">🫙</div>
+            <button class="pin-btn" style="width: auto; padding: 0 30px; border-radius: 30px; margin-top: 20px;" onclick="shakeJar()">Kocok Toples</button>
+            <div id="jar-text" class="cursive" style="margin-top: 30px; font-size: 1.5rem; color: var(--p-dark); text-align: center; min-height: 50px;"></div>
+        </section>
+
+        <!-- ENDING -->
+        <section>
+            <h2 class="reveal cursive" style="font-size: 3rem; color: var(--p-dark); text-align: center;">Thank You ❤️</h2>
+            <button class="pin-btn" style="width: 80%; margin-top: 40px; border-radius: 30px;" onclick="backToTop()">Kembali Ke Awal</button>
+        </section>
+
+    </div>
+
+    <audio id="audio"></audio>
+
+    <script>
+        // SAKURA ENGINE
+        const canvas = document.getElementById('sakura-canvas');
+        const ctx = canvas.getContext('2d');
+        let sakuras = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
+        class Sakura {
+            constructor() { this.init(); }
+            init() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height - 20;
+                this.size = Math.random() * 5 + 5;
+                this.speed = Math.random() * 1.5 + 1;
+                this.angle = Math.random() * 360;
+            }
+            draw() {
+                ctx.beginPath(); ctx.fillStyle = "#ffb7c5";
+                ctx.ellipse(this.x, this.y, this.size, this.size/2, this.angle * Math.PI/180, 0, 2*Math.PI);
+                ctx.fill();
+            }
+            update() {
+                this.y += this.speed; this.x += Math.sin(this.y/30);
+                if (this.y > canvas.height) this.init();
+            }
+        }
+        for(let i=0; i<40; i++) sakuras.push(new Sakura());
+        function anim() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            sakuras.forEach(s => { s.update(); s.draw(); });
+            requestAnimationFrame(anim);
+        } anim();
+
+        // PIN LOGIC
+        let pin = "";
+        const targetPin = "2604";
+        function press(n) {
+            if(pin.length < 4) {
+                pin += n;
+                document.getElementById(`dot${pin.length-1}`).classList.add('active');
+                if(pin.length === 4) setTimeout(checkPin, 300);
+            }
+        }
+        function back() {
+            if(pin.length > 0) {
+                document.getElementById(`dot${pin.length-1}`).classList.remove('active');
+                pin = pin.slice(0, -1);
+            }
+        }
+        function checkPin() {
+            if(pin === targetPin) {
+                gsap.to("#slide-password", { opacity: 0, duration: 1, onComplete: () => {
+                    document.getElementById('slide-password').style.display = 'none';
+                    document.getElementById('slide-gift').style.display = 'flex';
+                }});
+            } else {
+                Swal.fire({ icon: 'error', title: 'Salah PIN', text: 'Coba lagi sayang!', confirmButtonColor: '#d85c71' });
+                pin = ""; for(let i=0; i<4; i++) document.getElementById(`dot${i}`).classList.remove('active');
+            }
+        }
+
+        // GIFT EXPLOSION
+        function explodeGift() {
+            const gift = document.getElementById('gift-box');
+            const rect = gift.getBoundingClientRect();
+            for(let i=0; i<60; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.innerHTML = ['🌸','🌹','✨','💖','🌷'][Math.floor(Math.random()*5)];
+                p.style.left = (rect.left + rect.width/2) + 'px';
+                p.style.top = (rect.top + rect.height/2) + 'px';
+                document.body.appendChild(p);
+                gsap.to(p, {
+                    x: (Math.random() - 0.5) * window.innerWidth * 1.5,
+                    y: (Math.random() - 0.5) * window.innerHeight * 1.5,
+                    opacity: 0, duration: 2, onComplete: () => p.remove()
+                });
+            }
+            gsap.to(gift, { scale: 0, opacity: 0, duration: 0.5 });
+            setTimeout(() => {
+                document.getElementById('slide-gift').style.display = 'none';
+                const main = document.getElementById('main-content');
+                main.style.display = 'block';
+                gsap.to(main, { opacity: 1, duration: 1 });
+                document.getElementById('popup-card').classList.add('show');
+                initGSAP();
+            }, 800);
+        }
+
+        function closePopup() { document.getElementById('popup-card').classList.remove('show'); }
+
+        // MUSIC PLAYER LOGIC (WITH SEEKING)
+        const audio = document.getElementById('audio');
+        const playlist = [
+            {t: "Perfect - Ed Sheeran", s: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"},
+            {t: "Cantik - Kahitna", s: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"},
+            {t: "Akad - Payung Teduh", s: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"}
+        ];
+        let cur = 0;
+        
+        function playAt(i) {
+            cur = i;
+            audio.src = playlist[cur].s;
+            document.getElementById('song-title').innerText = playlist[cur].t;
+            audio.play();
+            updateMusicUI(true);
+        }
+        function togglePlay() {
+            if(audio.paused) { audio.play(); updateMusicUI(true); }
+            else { audio.pause(); updateMusicUI(false); }
+        }
+        function nextSong() { cur = (cur+1)%playlist.length; playAt(cur); }
+        function prevSong() { cur = (cur-1+playlist.length)%playlist.length; playAt(cur); }
+        function updateMusicUI(p) {
+            document.getElementById('play-btn').className = p ? "fas fa-pause" : "fas fa-play";
+            const art = document.getElementById('album-art');
+            p ? art.classList.add('playing') : art.classList.remove('playing');
+        }
+
+        // Progress Bar & Time Update
+        audio.ontimeupdate = () => {
+            if (audio.duration) {
+                const prog = (audio.currentTime / audio.duration) * 100;
+                document.getElementById('prog-bar').style.width = prog + "%";
+                document.getElementById('curr-time').innerText = formatTime(audio.currentTime);
+                document.getElementById('dur-time').innerText = formatTime(audio.duration);
+            }
+        };
+
+        // Seeking Function
+        document.getElementById('progress-area').addEventListener('click', function(e) {
+            const width = this.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audio.duration;
+            audio.currentTime = (clickX / width) * duration;
+        });
+
+        function formatTime(s) {
+            let min = Math.floor(s / 60);
+            let sec = Math.floor(s % 60);
+            return `${min}:${sec < 10 ? '0'+sec : sec}`;
+        }
+
+        // JAR
+        const msgs = ["Kamu sangat berharga.", "Senyummu adalah duniaku.", "I Love You More.", "Hana adalah yang terbaik.", "Terima kasih sudah ada."];
+        function shakeJar() {
+            const j = document.getElementById('jar');
+            j.classList.add('shake');
+            setTimeout(() => {
+                j.classList.remove('shake');
+                document.getElementById('jar-text').innerText = msgs[Math.floor(Math.random()*msgs.length)];
+            }, 500);
+        }
+
+        // UTILS
+        function msg(t) { Swal.fire({ text: t, confirmButtonColor: '#d85c71' }); }
+        function backToTop() { document.getElementById('main-content').scrollTo(0,0); }
+        function initGSAP() {
+            gsap.registerPlugin(ScrollTrigger);
+            document.querySelectorAll('.reveal').forEach(el => {
+                gsap.to(el, { scrollTrigger: { trigger: el, scroller: "#main-content", start: "top 90%" }, opacity: 1, y: 0, duration: 1 });
+            });
+        }
+        function viewPhoto(i) {
+            const imgs = ['https://images.unsplash.com/photo-1518133910546-b6c2fb7d79e3?w=800','https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800','https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?w=800'];
+            Swal.fire({ imageUrl: imgs[i], showConfirmButton: false });
+        }
+    </script>
+</body>
+</html>
